@@ -104,10 +104,6 @@ public class CupboardBlockProtectListener extends MyListener {
                     Location resend_location = b.getLocation();
                     p.sendBlockChange(resend_location, resend_location.getBlock().getType(), resend_location.getBlock().getData());
                 }
-            } else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
-                b.setType(Material.AIR);
-                Util.setUpTNT(b.getLocation().add(0.5,0,0.5));
-                e.setCancelled(true);
             }
         } else {
             if(data.checkIsLimit(b)){
@@ -123,7 +119,16 @@ public class CupboardBlockProtectListener extends MyListener {
         Block b = e.getBlock();
         if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
         if( p != null){
-            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
+            ItemStack itemInHand = null;
+            switch(e.getHand() == null ? EquipmentSlot.HAND : e.getHand()){
+            case OFF_HAND:
+                itemInHand = p.getInventory().getItemInOffHand();
+                break;
+            default:
+                itemInHand = p.getInventory().getItemInMainHand();
+                break;
+            }
+            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL && Util.isSpecialTNTItem(itemInHand)){
                 //確定邪惡精華足夠
                 Integer evilessence_cost = null;
                 if(Config.EVILESSENCE_ENABLE.getBoolean()){
@@ -132,7 +137,7 @@ public class CupboardBlockProtectListener extends MyListener {
                     } else {
                         evilessence_cost = Config.EVILESSENCE_TNT_COST.getInt();
                     }
-                    if(!p.getInventory().contains(Material.COMMAND_BLOCK_MINECART, evilessence_cost)){
+                    if(!p.getInventory().contains(Config.EVILESSENCE_MATERIAL.getMaterial(), evilessence_cost)){
                         p.sendMessage(Locales.TNT_EVILESSENCE_NOT_ENOUGH.getString());
                         e.setCancelled(true);
                         return;
@@ -163,7 +168,7 @@ public class CupboardBlockProtectListener extends MyListener {
                 Inventory inv = p.getInventory();
                 if(evilessence_cost != null){
                     for(int i=0; i<evilessence_cost; i++){
-                        inv.setItem(inv.first(Material.COMMAND_BLOCK_MINECART), null);
+                        inv.setItem(inv.first(Config.EVILESSENCE_MATERIAL.getMaterial()), null);
                     }
                 }
                 
@@ -176,17 +181,49 @@ public class CupboardBlockProtectListener extends MyListener {
         }
     }
     
-    //TNT放置
+    //TNT放置 (特殊TNT才會立即轉換成自訂爆炸；原版TNT保留成普通方塊)
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTNTPlace(BlockPlaceEvent e){
         Player p = e.getPlayer();
         if(e.isCancelled()) return;
-        if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
-            Block block = e.getBlockPlaced();
-            block.setType(Material.AIR);
-            Location loc = block.getLocation();
-            loc.add(0.5,0,0.5);
-            Util.setUpTNT(loc);
+        if(!Config.TNT_SP_ENABLE.getBoolean()) return;
+        if(!e.getBlockPlaced().getType().equals(Material.TNT)) return;
+        if(p.getGameMode() != GameMode.SURVIVAL) return;
+        
+        ItemStack itemInHand;
+        switch(e.getHand() == null ? EquipmentSlot.HAND : e.getHand()){
+        case OFF_HAND:
+            itemInHand = p.getInventory().getItemInOffHand();
+            break;
+        default:
+            itemInHand = p.getInventory().getItemInMainHand();
+            break;
+        }
+        if(!Util.isSpecialTNTItem(itemInHand)) return; //原版TNT，維持普通方塊，不轉換
+        
+        Block block = e.getBlockPlaced();
+        block.setType(Material.AIR);
+        Location loc = block.getLocation();
+        loc.add(0.5,0,0.5);
+        Util.setUpTNT(loc);
+    }
+    
+    //原版TNT點燃保護：沒有金磚領地權限的人無法用打火石/火焰彈點燃領地內的TNT
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onTNTIgnite(PlayerInteractEvent event){
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        Block b = event.getClickedBlock();
+        if(b == null || b.getType() != Material.TNT) return;
+        Player p = event.getPlayer();
+        if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName())) return;
+        ItemStack item = event.getItem();
+        if(item == null) return;
+        if(item.getType() != Material.FLINT_AND_STEEL && item.getType() != Material.FIRE_CHARGE) return;
+        
+        if(data.checkIsLimit(b, p)){
+            if(this.plugin.isOP(p)) return;
+            p.sendMessage(Locales.NO_ACCESS.getString());
+            event.setCancelled(true);
         }
     }
     

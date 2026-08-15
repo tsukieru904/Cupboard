@@ -65,10 +65,10 @@ public class EvilEssenceListener extends MyListener {
         if(event.getHand() == null) return;
         switch(event.getHand()){
         case HAND:
-            if(event.getPlayer().getInventory().getItemInMainHand().getType() != Material.COMMAND_BLOCK_MINECART) return;
+            if(event.getPlayer().getInventory().getItemInMainHand().getType() != Config.EVILESSENCE_MATERIAL.getMaterial()) return;
             break;
         case OFF_HAND:
-            if(event.getPlayer().getInventory().getItemInOffHand().getType() != Material.COMMAND_BLOCK_MINECART) return;
+            if(event.getPlayer().getInventory().getItemInOffHand().getType() != Config.EVILESSENCE_MATERIAL.getMaterial()) return;
             break;
         default:
             return;
@@ -80,7 +80,7 @@ public class EvilEssenceListener extends MyListener {
 
     //製造邪惡精華物品
     static public ItemStack getEvilEssence(){
-        ItemStack item = new ItemStack(Material.COMMAND_BLOCK_MINECART);
+        ItemStack item = new ItemStack(Config.EVILESSENCE_MATERIAL.getMaterial());
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(Locales.TNT_EVILESSENCE_NAME.getString());
         meta.setLore(Locales.TNT_EVILESSENCE_LORE.getStringList());

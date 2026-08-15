@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
@@ -50,6 +51,7 @@ public enum Config {
     EVILESSENCE_TNT_COST_BOUNS_Y("evilessence.tnt-place-cost-bouns-y", 55, ""),
     EVILESSENCE_TNT_COST_BOUNS_AMOUNT("evilessence.tnt-place-cost-bouns-amount", 2, ""),
     EVILESSENCE_COMPASS_COST("evilessence.compass-use-cost", 1, ""),
+    EVILESSENCE_MATERIAL("evilessence.material", "COMMAND_BLOCK_MINECART", "邪惡精華使用的物品外觀，填 Bukkit Material 名稱 (例如 COMMAND_BLOCK_MINECART, NETHER_STAR)，建議挑一個玩家平常拿不到的材質"),
     EVILESSENCE_DROPAMOUNT("evilessence.dropamount", new String[]{
             "SPAWNER:3:5"
     }, ""),
@@ -98,6 +100,19 @@ public enum Config {
 	
 	public String getString() {
 	    return Util.replaceColors(cfg.getString(path));
+	}
+	
+	public Material getMaterial() {
+	    String raw = cfg.getString(path);
+	    Material m = Material.matchMaterial(raw == null ? "" : raw);
+	    if (m == null) {
+	        String fallback = (String) value;
+	        Cupboard.getInstance().log(
+	                "設定檔 %s 的值 \"%s\" 不是有效的 Material，改用預設值 %s",
+	                path, raw, fallback);
+	        m = Material.matchMaterial(fallback);
+	    }
+	    return m;
 	}
 	
 	public List<String> getStringList() {

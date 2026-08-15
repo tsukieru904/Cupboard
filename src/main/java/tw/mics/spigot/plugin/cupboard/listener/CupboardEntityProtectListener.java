@@ -32,7 +32,7 @@ public class CupboardEntityProtectListener extends MyListener {
             Material.ACACIA_BOAT,
             Material.DARK_OAK_BOAT,
             Material.MINECART ,
-            Material.COMMAND_BLOCK_MINECART,
+            Config.EVILESSENCE_MATERIAL.getMaterial(),
             Material.TNT_MINECART,
             Material.HOPPER_MINECART,
             Material.FURNACE_MINECART,

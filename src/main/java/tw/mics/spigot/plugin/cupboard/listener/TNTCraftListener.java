@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
+import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class TNTCraftListener extends MyListener {
 	public TNTCraftListener(Cupboard instance)
@@ -84,6 +85,7 @@ public class TNTCraftListener extends MyListener {
     	meta = item.getItemMeta();
     	meta.setLore(Locales.TNT_TNT_LORE.getStringList());
     	item.setItemMeta(meta);
+    	Util.markSpecialTNTItem(item); // 標記成特殊TNT，跟原版TNT區分
     	
     	//setup TNT recipes
     	shapedRecipe = new ShapedRecipe(item);

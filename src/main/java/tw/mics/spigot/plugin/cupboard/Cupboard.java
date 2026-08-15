@@ -65,12 +65,11 @@ public class Cupboard extends JavaPlugin implements Listener {
         registedObject.add(new CupboardExplosionProtectListener(this));
         registedObject.add(new CupboardBlockProtectListener(this));
         registedObject.add(new GoldBlockListener(this));
-        registedObject.add(new TNTCraftListener(this));
 
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
+            registedObject.add(new TNTCraftListener(this));
             registedObject.add(new TNTExplosionListener(this));
-        	//registedObject.add(new TNTCraftListener(this));
         }
         
         if(Config.EVILESSENCE_ENABLE.getBoolean()){

@@ -49,10 +49,10 @@ public class TNTExplosionListener extends MyListener {
 	    }
 	}
 
-	//爆炸後
+	//爆炸後（只處理特殊TNT轉換出來的實體，原版TNT走原版爆炸邏輯，不動它）
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onExplode(EntityExplodeEvent event){
-        if(!(event.getEntity() instanceof TNTPrimed)) return;
+        if(!Util.isSpecialTNTEntity(event.getEntity())) return;
     	event.blockList().clear();
     	Location loc = event.getLocation();
     	Integer r = Config.TNT_EXPLOSION_RADIUS.getInt();
@@ -81,10 +81,10 @@ public class TNTExplosionListener extends MyListener {
     	}
     }
     
-    //爆炸前
+    //爆炸前（同樣只調整特殊TNT的爆炸半徑，原版TNT維持原版半徑）
     @EventHandler
     public void onTNTPrime(ExplosionPrimeEvent e){
-        if(!(e.getEntity() instanceof TNTPrimed)) return;
+        if(!Util.isSpecialTNTEntity(e.getEntity())) return;
         e.setRadius(Config.TNT_EXPLOSION_RADIUS.getInt()+1);
     }
     
