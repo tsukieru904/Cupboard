@@ -240,7 +240,10 @@ public class CupboardsData {
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
+            if(uuid != null){
+                Player online = plugin.getServer().getPlayer(UUID.fromString(uuid));
+                if(online != null) online.sendMessage("系統嚴重錯誤, 請聯繫管理員");
+            }
             flag_access = false;
         }
         return flag_access;
@@ -299,7 +302,6 @@ public class CupboardsData {
 
     //Async
     public void cleanNotExistUser() {
-        final File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "playerdata");
         SchedulerCompat.runAsync(plugin, new Runnable(){
             @Override
             public void run() {
@@ -320,12 +322,22 @@ public class CupboardsData {
                     stmt.execute(sql);
                     
                     //find non-exist player data
+                    // 改用 Bukkit API 判斷玩家是否存在過，不要自己解析 playerdata 檔案路徑，
+                    // 因為世界儲存格式（例如 1.26.1 起 playerdata 移到 players/ 底下）可能會變動，
+                    // 硬解路徑一旦抓不到檔案，會誤判所有玩家不存在而把授權整批刪除。
                     sql = "SELECT UUID FROM PLAYER_OWN_CUPBOARDS GROUP BY UUID;";
                     ResultSet rs = stmt.executeQuery(sql);
                     while(rs.next()){
-                        File player_file = new File(playerDataFolder, rs.getString(1) + ".dat");
-                        if(!player_file.exists()){
-                            remove_uuid_list.add(rs.getString(1));
+                        String uuid_str = rs.getString(1);
+                        boolean played_before;
+                        try {
+                            played_before = Bukkit.getOfflinePlayer(UUID.fromString(uuid_str)).hasPlayedBefore();
+                        } catch (IllegalArgumentException e) {
+                            // UUID 格式壞掉的舊資料，視為不存在的玩家一併清掉
+                            played_before = false;
+                        }
+                        if(!played_before){
+                            remove_uuid_list.add(uuid_str);
                         }
                     }
 
@@ -566,7 +578,10 @@ public class CupboardsData {
                 plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
                 e.printStackTrace();
                 plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
+                if(uuid != null){
+                    Player online = plugin.getServer().getPlayer(UUID.fromString(uuid));
+                    if(online != null) online.sendMessage("系統嚴重錯誤, 請聯繫管理員");
+                }
                 flag_access = false;
             }
             check_access_cache.put(cache_key, flag_access);

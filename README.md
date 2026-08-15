@@ -81,7 +81,6 @@ Locale files live under `plugins/Cupboard/locales/`. Point `config.yml`'s `local
 |---|---|
 | `en-EN` | English (default) |
 | `zh` | Chinese (Simplified) |
-| `zh-TW` | Chinese (Taiwan, Traditional) |
 | `zh_TW` | Chinese (Taiwan, Traditional) |
 | `zh_HK` | Chinese (Hong Kong, Traditional) |
 

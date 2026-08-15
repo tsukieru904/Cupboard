@@ -29,6 +29,8 @@ public class GoldBlockListener extends MyListener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onGoldBlockBreak(BlockBreakEvent event){
     	if(event.isCancelled())return;
+    	List<String> enable_world = Config.ENABLE_WORLD.getStringList();
+        if(!enable_world.contains(event.getBlock().getWorld().getName()))return;
     	if(event.getBlock().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
     		if(plugin.cupboards.removeCupboard(event.getBlock(), event.getPlayer())){
