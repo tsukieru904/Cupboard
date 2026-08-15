@@ -77,7 +77,7 @@ public class GoldCommand implements CommandExecutor {
                     return true;
                 }
 
-                SchedulerCompat.runLater(plugin, () -> {
+                SchedulerCompat.runForEntity(plugin, playerSender, () -> {
                     Player receiver = Bukkit.getPlayer(UUID.fromString(receiverUuid));
                     if(receiver == null){
                         sender.sendMessage(ChatColor.RED + "該玩家目前不在線上");
@@ -86,7 +86,8 @@ public class GoldCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + "開始執行授權賦予動作...");
                     plugin.cupboards.giveAcceee(senderUuid, receiverUuid, playerSender.getLocation().clone());
                     sender.sendMessage(ChatColor.GREEN + "已把附近 ±200 格內已授權金磚賦予給 " + receiver.getDisplayName());
-                    receiver.sendMessage(ChatColor.GREEN + " " + playerSender.getDisplayName() + " 把附近 ±200 格內已授權金磚賦予給您");
+                    SchedulerCompat.runForEntity(plugin, receiver, () ->
+                        receiver.sendMessage(ChatColor.GREEN + " " + playerSender.getDisplayName() + " 把附近 ±200 格內已授權金磚賦予給您"));
                 }, 0L);
                 return true;
             }
@@ -115,7 +116,7 @@ public class GoldCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "賦予需要雙方在 20 格內才能進行");
                     return true;
                 }
-                SchedulerCompat.TaskHandle handle = SchedulerCompat.runLater(plugin, () -> {
+                SchedulerCompat.TaskHandle handle = SchedulerCompat.runForEntity(plugin, playerSender, () -> {
                     confirmList.remove(senderUuid);
                     sender.sendMessage(ChatColor.RED + "確認已失效");
                 }, CONFIRM_EXPIRE_TICKS);

@@ -411,32 +411,22 @@ public class CupboardsData {
                     e.printStackTrace();
                     plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     final String failMessage = ChatColor.DARK_RED + "系統嚴重錯誤, 請聯繫管理員";
-                    SchedulerCompat.runSync(plugin, new Runnable(){
-                        @Override
-                        public void run() {
-                            Player online = plugin.getServer().getPlayer(playerUuid);
-                            if(online != null){
-                                online.sendMessage(failMessage);
-                            } else {
-                                plugin.log("Failed to notify %s about the nearest cupboard error.", playerName);
-                            }
-                        }
-                    });
+                    Player online = plugin.getServer().getPlayer(playerUuid);
+                    if(online != null){
+                        SchedulerCompat.runForEntity(plugin, online, () -> online.sendMessage(failMessage));
+                    } else {
+                        plugin.log("Failed to notify %s about the nearest cupboard error.", playerName);
+                    }
                     return;
                 }
 
                 final String message = nearest_loc == null
                         ? ChatColor.RED + "附近沒有已授權金磚"
                         : ChatColor.GOLD + "最近的已授權金磚在 " + nearest_loc;
-                SchedulerCompat.runSync(plugin, new Runnable(){
-                    @Override
-                    public void run() {
-                        Player online = plugin.getServer().getPlayer(playerUuid);
-                        if(online != null){
-                            online.sendMessage(message);
-                        }
-                    }
-                });
+                Player online = plugin.getServer().getPlayer(playerUuid);
+                if(online != null){
+                    SchedulerCompat.runForEntity(plugin, online, () -> online.sendMessage(message));
+                }
             }
         });
     }
@@ -489,19 +479,16 @@ public class CupboardsData {
 
                 check_access_cache.clear();
 
-                SchedulerCompat.runSync(plugin, new Runnable(){
-                    @Override
-                    public void run() {
-                        Player giver = plugin.getServer().getPlayer(UUID.fromString(giver_uuid));
-                        Player receiver = plugin.getServer().getPlayer(UUID.fromString(receiver_uuid));
-                        if(giver != null){
-                            giver.sendMessage(ChatColor.GREEN + "已把附近 ±200 格內已授權金磚賦予給 " + receiverName);
-                        }
-                        if(receiver != null){
-                            receiver.sendMessage(ChatColor.GREEN + " " + giverName + " 把附近 ±200 格內已授權金磚賦予給您");
-                        }
-                    }
-                });
+                Player giver = plugin.getServer().getPlayer(UUID.fromString(giver_uuid));
+                Player receiver = plugin.getServer().getPlayer(UUID.fromString(receiver_uuid));
+                if(giver != null){
+                    SchedulerCompat.runForEntity(plugin, giver, () ->
+                        giver.sendMessage(ChatColor.GREEN + "已把附近 ±200 格內已授權金磚賦予給 " + receiverName));
+                }
+                if(receiver != null){
+                    SchedulerCompat.runForEntity(plugin, receiver, () ->
+                        receiver.sendMessage(ChatColor.GREEN + " " + giverName + " 把附近 ±200 格內已授權金磚賦予給您"));
+                }
             }
         });
     }

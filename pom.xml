@@ -59,6 +59,28 @@
 			            <goals>
 			                <goal>shade</goal>
 			            </goals>
+			            <configuration>
+			                <filters>
+			                    <filter>
+			                        <!-- sqlite-jdbc 內建各平台原生檔，伺服器只跑在 Linux x86_64，其他平台的都濾掉減小體積 -->
+			                        <artifact>org.xerial:sqlite-jdbc</artifact>
+			                        <excludes>
+			                            <exclude>org/sqlite/native/FreeBSD/**</exclude>
+			                            <exclude>org/sqlite/native/Linux-Android/**</exclude>
+			                            <exclude>org/sqlite/native/Linux-Musl/**</exclude>
+			                            <exclude>org/sqlite/native/Linux/arm/**</exclude>
+			                            <exclude>org/sqlite/native/Linux/armv6/**</exclude>
+			                            <exclude>org/sqlite/native/Linux/armv7/**</exclude>
+			                            <exclude>org/sqlite/native/Linux/aarch64/**</exclude>
+			                            <exclude>org/sqlite/native/Linux/ppc64/**</exclude>
+			                            <exclude>org/sqlite/native/Linux/riscv64/**</exclude>
+			                            <exclude>org/sqlite/native/Linux/x86/**</exclude>
+			                            <exclude>org/sqlite/native/Mac/**</exclude>
+			                            <exclude>org/sqlite/native/Windows/**</exclude>
+			                        </excludes>
+			                    </filter>
+			                </filters>
+			            </configuration>
 			        </execution>
 			    </executions>
 			</plugin>
