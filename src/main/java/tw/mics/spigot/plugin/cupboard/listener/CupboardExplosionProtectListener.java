@@ -75,7 +75,7 @@ public class CupboardExplosionProtectListener extends MyListener {
         if(!Config.ENABLE_WORLD.getStringList().contains(event.getEntity().getWorld().getName()))return;
         if((
                 Config.ANTI_OTHERS_EXPLOSION.getBoolean() && 
-                event.getEntityType() == EntityType.TNT_MINECART
+                event.getEntityType() == EntityType.MINECART_TNT
             ) || (
                 disable_explosion_id.contains(event.getEntity().getEntityId())
             )){
