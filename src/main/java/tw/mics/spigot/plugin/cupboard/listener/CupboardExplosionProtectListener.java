@@ -3,6 +3,7 @@ package tw.mics.spigot.plugin.cupboard.listener;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -54,6 +55,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     @EventHandler
     public void onExplode(BlockExplodeEvent event){
         if(!Config.ENABLE_WORLD.getStringList().contains(event.getBlock().getWorld().getName()))return;
+        event.blockList().removeIf(b -> b.getType() == Material.GOLD_BLOCK); //金磚不能被炸掉
         if(!Config.ANTI_OTHERS_EXPLOSION.getBoolean()) return;
         float distance_longest = 0;
         Iterator<Block> itr = event.blockList().iterator();
@@ -80,7 +82,10 @@ public class CupboardExplosionProtectListener extends MyListener {
                 disable_explosion_id.contains(event.getEntity().getEntityId())
             )){
             event.blockList().clear();
+            return;
         }
+        //金砖是保護區的授權依據，不管什麼爆炸(原版TNT、Creeper等)都不能被炸掉
+        event.blockList().removeIf(b -> b.getType() == Material.GOLD_BLOCK);
     }
 
     //防止Armor stand被炸毀

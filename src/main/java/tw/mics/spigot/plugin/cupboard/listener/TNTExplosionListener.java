@@ -60,6 +60,7 @@ public class TNTExplosionListener extends MyListener {
             for(int y = -r; y <= r; y++){
                 for(int z = -r; z <= r; z++){
             	    Block b = loc.clone().add(x, y, z).getBlock();
+            	    if(b.getType() == Material.GOLD_BLOCK) continue; //金磚不能被特殊TNT炸掉
             	    if(b.getType() == Material.TNT){
             	        b.setType(Material.AIR);
             	        Util.setUpTNT(b.getLocation().add(0.5, 0, 0.5));

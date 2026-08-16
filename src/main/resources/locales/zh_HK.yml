@@ -9,12 +9,6 @@ gold-block:
   revoke-access: 已取消授權
   no-access: '&4沒有權限'
 tnt:
-  explotion-name: '&4炸藥'
-  explotion-lore:
-  - '&r&a請參考以下合成表來合成TNT'
-  - '&r&6E E E   &bE 代表&4炸藥'
-  - '&r&6E G E   &bG 代表金磚'
-  - '&r&6E E E'
   tnt-lore:
   - '&r&6放置後自動點燃'
   - '&r&6可以破壞保護區'

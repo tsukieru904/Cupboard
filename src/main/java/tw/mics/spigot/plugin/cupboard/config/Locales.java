@@ -25,14 +25,6 @@ public enum Locales {
 	NO_ACCESS("gold-block.no-access", "&4No access."),
 	
 	//TNT
-	TNT_EXPLOTION_NAME("tnt.explotion-name", "&4Explosion"),
-	TNT_EXPLOTION_LORE("tnt.explotion-lore", new String[] {
-			"&r&aPlease follow this to craft TNT",
-	    	"&r&6E E E   &bE is &4Explosion",
-	    	"&r&6E G E   &bG is Block of Gold",
-	    	"&r&6E E E"
-	}),
-    
     TNT_TNT_LORE("tnt.tnt-lore", new String[] {
             "&r&6Put in portect area, will Auto Ignite.",
             "&r&6Can destory protect area.",
