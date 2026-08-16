@@ -166,9 +166,7 @@ public class CupboardBlockProtectListener extends MyListener {
                     
                     Inventory inv = p.getInventory();
                     if(evilessence_cost != null){
-                        for(int i=0; i<evilessence_cost; i++){
-                            inv.setItem(inv.first(Config.EVILESSENCE_MATERIAL.getMaterial()), null);
-                        }
+                        Util.removeItemAmount(inv, Config.EVILESSENCE_MATERIAL.getMaterial(), evilessence_cost);
                     }
                 }
                 

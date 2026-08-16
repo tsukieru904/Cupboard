@@ -21,7 +21,3 @@ tnt:
   - '&r&6有了它, 你才可以使用指南针.'
   tnt-not-enough: '&4手上的 TNT 不足 (需要 2 个)'
   evilessence-not-enough: '&4邪恶精华不足'
-compass:
-  can-not-found-player-or-world-wrong: '&4无法找到玩家, 或你所在的世界无法使用.'
-  your-compass-sucessful: '&a你的指南针受到了邪恶精华的影响, 现在已经指向了某位玩家.'
-  you-are-pointed-by-someone: '&4你感受到了一股邪恶力量, 你的位置已经被其他玩家得知了!'

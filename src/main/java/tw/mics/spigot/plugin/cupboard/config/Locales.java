@@ -38,10 +38,7 @@ public enum Locales {
             "&r&6Evil essence.",
     }), 
     TNT_NOT_ENOUGH("tnt.tnt-not-enough", "&4on hand TNT not enough (it cost 2)"),
-    TNT_EVILESSENCE_NOT_ENOUGH("tnt.evilessence-not-enough", "&4Evil Essence not enough"), 
-    COMPASS_NOT_FOUND_PLAYER("compass.can-not-found-player-or-world-wrong", "&4Can't found player or world type is wrong."), 
-    COMPASS_SUCCESSFUL("compass.your-compass-sucessful", "&aYour compass now point someone."), 
-    COMPASS_BE_POINTED("compass.you-are-pointed-by-someone", "&4You are pointed by someone, be careful");
+    TNT_EVILESSENCE_NOT_ENOUGH("tnt.evilessence-not-enough", "&4Evil Essence not enough");
 	
 	private final Object value;
 	private final String path;

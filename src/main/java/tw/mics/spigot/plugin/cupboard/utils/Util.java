@@ -4,6 +4,7 @@ import java.util.StringTokenizer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Wolf;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -101,6 +103,24 @@ public class Util {
 	public static boolean isSpecialTNTEntity(Entity e){
 	    if(!(e instanceof TNTPrimed)) return false;
 	    return ((TNTPrimed) e).getPersistentDataContainer().has(getSpecialTNTKey(), PersistentDataType.BYTE);
+	}
+	
+	// 從背包扣除指定數量的物品，可堆疊物品會照數量一個一個扣，不會整組(整個slot)直接被清空
+	public static void removeItemAmount(Inventory inv, Material material, int amount){
+	    int remaining = amount;
+	    while(remaining > 0){
+	        int slot = inv.first(material);
+	        if(slot < 0) break; // 東西不夠扣了（正常情況下呼叫前應該已經檢查過數量足夠）
+	        ItemStack stack = inv.getItem(slot);
+	        if(stack == null) break;
+	        int take = Math.min(stack.getAmount(), remaining);
+	        if(stack.getAmount() <= take){
+	            inv.setItem(slot, null);
+	        } else {
+	            stack.setAmount(stack.getAmount() - take);
+	        }
+	        remaining -= take;
+	    }
 	}
 	
 	public static void setUpTNT(Location l){

@@ -12,21 +12,21 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public enum Config {
 
-	DEBUG("debug", false, "is plugin show debug message?"),
-	CUPBOARD_PROTECT_DIST("cupboard.protect_dist", 9, "this is cupboard protect area size (ex 9 is 9+9+1 -> 19*19*19)"),
-    CUPBOARD_BETWEEN_DIST("cupboard.between_dist", 18, "this is how many block between cupboard can put another cupboard"),
-    CUPBOARD_PREVENT_TELEPORT_ENABLE("cupboard.prevent-teleport.enable", true, "prevent protect area teleport in (ender peral and chorus fruit)"),
-    CUPBOARD_PREVENT_TELEPORT_IGNORE_Y("cupboard.prevent-teleport.ignore-y", 55, "Y lower than this number, teleport still working"),
-	ANTI_TNT_EXPLOSION("cupboard.anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
-	ANTI_OTHERS_EXPLOSION("cupboard.anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
-    OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
+	DEBUG("debug", false, "是否顯示除錯訊息"),
+	CUPBOARD_PROTECT_DIST("cupboard.protect_dist", 9, "金磚保護區範圍大小 (例如填9，代表以金磚為中心左右各9格 -> 19*19*19)"),
+    CUPBOARD_BETWEEN_DIST("cupboard.between_dist", 18, "金磚與金磚之間至少要間隔幾格，才能再放下一個新的金磚"),
+    CUPBOARD_PREVENT_TELEPORT_ENABLE("cupboard.prevent-teleport.enable", true, "是否阻擋玩家用終界珍珠、紫頌果傳送進入保護區"),
+    CUPBOARD_PREVENT_TELEPORT_IGNORE_Y("cupboard.prevent-teleport.ignore-y", 55, "Y座標低於這個值時，傳送阻擋不生效（仍然可以傳送進去）"),
+	ANTI_TNT_EXPLOSION("cupboard.anti-tnt-explosion", false, "金磚保護區是否阻擋TNT爆炸造成的破壞"),
+	ANTI_OTHERS_EXPLOSION("cupboard.anti-creeper-explosion", true, "金磚保護區是否阻擋苦力怕爆炸造成的破壞"),
+    OP_BYPASS("cupboard.is-op-creative-bypass", true, "OP在創造模式下是否可以無視金磚保護區限制"),
     ENABLE_WORLD("cupboard.enable-world", new String[]{
             "world"
-    }, "witch world is enable cupboard?"),
+    }, "哪些世界要啟用金磚保護機制"),
 
-	TNT_SP_ENABLE("tnt.enable", true, "let TNT event handle by plugin."),
-    TNT_EXPLOSION_RADIUS("tnt.radius", 1, "TNT radius (int only)"),
-    TNT_COST("tnt.cost", 2, "placing 1 special TNT costs this many vanilla TNT from hand"),
+	TNT_SP_ENABLE("tnt.enable", true, "是否讓插件接管TNT相關事件（合成特殊TNT、放置權限、爆炸邏輯等）"),
+    TNT_EXPLOSION_RADIUS("tnt.radius", 1, "特殊TNT的爆炸半徑（只能填整數）"),
+    TNT_COST("tnt.cost", 2, "放置1個特殊TNT要消耗手上幾個原版TNT"),
     TNT_BREAKCHANCE("tnt.breakchance", new String[]{
             "BARRIER:0:AIR",
             "BEDROCK:0:AIR",
@@ -43,23 +43,18 @@ public enum Config {
             "ENCHANTING_TABLE:0.25:AIR",
             "ENDER_CHEST:0.25:AIR",
             "OBSIDIAN:0.5:COBBLESTONE"
-    }, "set block destory chance Material:chance:turn_to_Material (turn_to_Material set to \"DROP\" will destory like normal TNT)"),
-    TNT_FUSETICK("tnt.fusetick", 100, "TNT Fuse tick (int only)"),
-    EVILESSENCE_ENABLE("evilessence.enable", true, ""),
-    EVILESSENCE_TNT_COST("evilessence.tnt-place-cost", 1, ""),
-    EVILESSENCE_TNT_COST_BOUNS_Y("evilessence.tnt-place-cost-bouns-y", 55, ""),
-    EVILESSENCE_TNT_COST_BOUNS_AMOUNT("evilessence.tnt-place-cost-bouns-amount", 2, ""),
-    EVILESSENCE_COMPASS_COST("evilessence.compass-use-cost", 1, ""),
+    }, "設定特殊TNT炸到各方塊時的破壞機率，格式為 材質:機率:轉換成的材質（轉換材質填DROP代表跟原版TNT一樣直接摧毀掉落）"),
+    TNT_FUSETICK("tnt.fusetick", 100, "特殊TNT的引信時間（單位tick，只能填整數）"),
+    EVILESSENCE_ENABLE("evilessence.enable", true, "是否啟用邪惡精華機制"),
+    EVILESSENCE_TNT_COST("evilessence.tnt-place-cost", 1, "放置1個特殊TNT要消耗的邪惡精華數量"),
+    EVILESSENCE_TNT_COST_BOUNS_Y("evilessence.tnt-place-cost-bouns-y", 55, "Y座標高於這個值時，邪惡精華消耗量改用 tnt-place-cost-bouns-amount 的設定"),
+    EVILESSENCE_TNT_COST_BOUNS_AMOUNT("evilessence.tnt-place-cost-bouns-amount", 2, "Y座標超過 tnt-place-cost-bouns-y 時，改消耗這個數量的邪惡精華"),
     EVILESSENCE_MATERIAL("evilessence.material", "COMMAND_BLOCK_MINECART", "邪惡精華使用的物品外觀，填 Bukkit Material 名稱 (例如 COMMAND_BLOCK_MINECART, NETHER_STAR)，建議挑一個玩家平常拿不到的材質"),
     EVILESSENCE_DROPAMOUNT("evilessence.dropamount", new String[]{
             "SPAWNER:3:5"
-    }, ""),
+    }, "破壞方塊掉落邪惡精華的設定，格式為 方塊材質:最小掉落數量:最大掉落數量"),
 
-    COMPASS_ENABLE("compass.enable", true, ""),
-    COMPASS_DEVIATION("compass.deviation", 200, ""),
-    COMPASS_TARGET_Y("compass.target-y", 55, "target must below this"),
-    
-	LOCALE("locale", "en", "language file name");
+	LOCALE("locale", "en", "語言檔檔名（對應 locales 資料夾裡的檔名，不含副檔名）");
 	
 	private final Object value;
 	private final String path;

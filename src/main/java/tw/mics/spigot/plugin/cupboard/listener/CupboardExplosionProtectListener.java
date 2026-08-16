@@ -21,6 +21,7 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
+import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class CupboardExplosionProtectListener extends MyListener {
 	private CupboardsData data;
@@ -84,8 +85,17 @@ public class CupboardExplosionProtectListener extends MyListener {
             event.blockList().clear();
             return;
         }
-        //金砖是保護區的授權依據，不管什麼爆炸(原版TNT、Creeper等)都不能被炸掉
+        //金磚是保護區的授權依據，不管什麼爆炸(原版TNT、Creeper等)都不能被炸掉
         event.blockList().removeIf(b -> b.getType() == Material.GOLD_BLOCK);
+        
+        //原版TNT：如果引爆點不在任何保護區內，代表這是從外部炸過來的（沒權限的人在保護區外引爆），
+        //要把爆炸範圍內屬於任何保護區的方塊都排除掉，不能讓外部爆炸波及保護區
+        //（如果引爆點本身就在保護區內，代表點燃時就已經通過權限檢查了，不用再過濾）
+        if(event.getEntity() instanceof TNTPrimed && !Util.isSpecialTNTEntity(event.getEntity())){
+            if(!data.checkIsLimit(event.getEntity().getLocation())){
+                event.blockList().removeIf(b -> data.checkIsLimit(b.getLocation()));
+            }
+        }
     }
 
     //防止Armor stand被炸毀
