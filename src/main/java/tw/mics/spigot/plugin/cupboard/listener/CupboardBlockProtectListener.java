@@ -129,6 +129,9 @@ public class CupboardBlockProtectListener extends MyListener {
                 break;
             }
             if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && Util.isSpecialTNTItem(itemInHand)){
+                //先在方塊上做記號，因為消耗掉最後一個手持物品後，MONITOR階段再讀手上的物品會讀到空氣，判斷不出來
+                e.getBlockPlaced().setMetadata("cupboard_special_tnt", new FixedMetadataValue(this.plugin, true));
+                
                 //確定邪惡精華足夠（創造模式不用消耗資源，直接跳過扣除，但轉換行為照樣生效）
                 if(p.getGameMode() == GameMode.SURVIVAL){
                     Integer evilessence_cost = null;
@@ -182,23 +185,16 @@ public class CupboardBlockProtectListener extends MyListener {
     //TNT放置 (特殊TNT才會立即轉換成自訂爆炸；原版TNT保留成普通方塊)
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTNTPlace(BlockPlaceEvent e){
-        Player p = e.getPlayer();
         if(e.isCancelled()) return;
         if(!Config.TNT_SP_ENABLE.getBoolean()) return;
-        if(!e.getBlockPlaced().getType().equals(Material.TNT)) return;
-        
-        ItemStack itemInHand;
-        switch(e.getHand() == null ? EquipmentSlot.HAND : e.getHand()){
-        case OFF_HAND:
-            itemInHand = p.getInventory().getItemInOffHand();
-            break;
-        default:
-            itemInHand = p.getInventory().getItemInMainHand();
-            break;
-        }
-        if(!Util.isSpecialTNTItem(itemInHand)) return; //原版TNT，維持普通方塊，不轉換
-        
         Block block = e.getBlockPlaced();
+        if(!block.getType().equals(Material.TNT)) return;
+        
+        //讀取onBlockPlace階段留下的記號，而不是重新去讀手上的物品
+        //（如果手上剛好只剩最後一個，這時候已經被消耗成空氣了，讀不到）
+        if(!block.hasMetadata("cupboard_special_tnt")) return; //原版TNT，維持普通方塊，不轉換
+        block.removeMetadata("cupboard_special_tnt", this.plugin);
+        
         block.setType(Material.AIR);
         Location loc = block.getLocation();
         loc.add(0.5,0,0.5);

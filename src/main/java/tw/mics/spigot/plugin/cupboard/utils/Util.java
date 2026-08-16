@@ -123,6 +123,36 @@ public class Util {
 	    }
 	}
 	
+	// 把背包裡符合條件的物品盡量疊在一起（用來繞過Geyser/Bedrock合成介面翻譯限制導致的物品散格問題）
+	public static void stackSimilarItems(Inventory inv, java.util.function.Predicate<ItemStack> matcher, int maxStackSize){
+	    ItemStack[] contents = inv.getStorageContents();
+	    for(int i = 0; i < contents.length; i++){
+	        ItemStack a = contents[i];
+	        if(a == null || !matcher.test(a)) continue;
+	        if(a.getAmount() >= maxStackSize) continue;
+	        boolean changed = false;
+	        for(int j = i+1; j < contents.length; j++){
+	            ItemStack b = contents[j];
+	            if(b == null || !matcher.test(b)) continue;
+	            int space = maxStackSize - a.getAmount();
+	            if(space <= 0) break;
+	            int move = Math.min(space, b.getAmount());
+	            a.setAmount(a.getAmount() + move);
+	            b.setAmount(b.getAmount() - move);
+	            changed = true;
+	            if(b.getAmount() <= 0){
+	                inv.setItem(j, null);
+	            } else {
+	                inv.setItem(j, b);
+	            }
+	            if(a.getAmount() >= maxStackSize) break;
+	        }
+	        if(changed){
+	            inv.setItem(i, a);
+	        }
+	    }
+	}
+	
 	public static void setUpTNT(Location l){
         TNTPrimed tnt = l.getWorld().spawn(l, TNTPrimed.class);
         tnt.setGravity(false);
