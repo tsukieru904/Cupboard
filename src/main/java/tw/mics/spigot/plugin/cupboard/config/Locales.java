@@ -25,6 +25,7 @@ public enum Locales {
 	NO_ACCESS("gold-block.no-access", "&4No access."),
 	
 	//TNT
+    TNT_SPECIAL_NAME("tnt.special-name", "&4Special TNT"),
     TNT_TNT_LORE("tnt.tnt-lore", new String[] {
             "&r&6Put in portect area, will Auto Ignite.",
             "&r&6Can destory protect area.",

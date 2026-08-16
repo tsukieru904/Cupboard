@@ -128,23 +128,23 @@ public class CupboardBlockProtectListener extends MyListener {
                 itemInHand = p.getInventory().getItemInMainHand();
                 break;
             }
-            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL && Util.isSpecialTNTItem(itemInHand)){
-                //確定邪惡精華足夠
-                Integer evilessence_cost = null;
-                if(Config.EVILESSENCE_ENABLE.getBoolean()){
-                    if(e.getBlock().getLocation().getBlockY() > Config.EVILESSENCE_TNT_COST_BOUNS_Y.getInt()){
-                        evilessence_cost = Config.EVILESSENCE_TNT_COST_BOUNS_AMOUNT.getInt();
-                    } else {
-                        evilessence_cost = Config.EVILESSENCE_TNT_COST.getInt();
+            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && Util.isSpecialTNTItem(itemInHand)){
+                //確定邪惡精華足夠（創造模式不用消耗資源，直接跳過扣除，但轉換行為照樣生效）
+                if(p.getGameMode() == GameMode.SURVIVAL){
+                    Integer evilessence_cost = null;
+                    if(Config.EVILESSENCE_ENABLE.getBoolean()){
+                        if(e.getBlock().getLocation().getBlockY() > Config.EVILESSENCE_TNT_COST_BOUNS_Y.getInt()){
+                            evilessence_cost = Config.EVILESSENCE_TNT_COST_BOUNS_AMOUNT.getInt();
+                        } else {
+                            evilessence_cost = Config.EVILESSENCE_TNT_COST.getInt();
+                        }
+                        if(!p.getInventory().contains(Config.EVILESSENCE_MATERIAL.getMaterial(), evilessence_cost)){
+                            p.sendMessage(Locales.TNT_EVILESSENCE_NOT_ENOUGH.getString());
+                            e.setCancelled(true);
+                            return;
+                        }
                     }
-                    if(!p.getInventory().contains(Config.EVILESSENCE_MATERIAL.getMaterial(), evilessence_cost)){
-                        p.sendMessage(Locales.TNT_EVILESSENCE_NOT_ENOUGH.getString());
-                        e.setCancelled(true);
-                        return;
-                    }
-                }
-                //確定 TNT 數量足夠
-                if(e.getBlock().getLocation().getBlockY() > Config.TNT_EXPLOSION_BOUNS_Y.getInt()){
+                    //確定 TNT 數量足夠（固定消耗 tnt.cost 個，不分高度）
                     ItemStack tnt;
                     if(e.getHand() == null) return;
                     switch(e.getHand()){
@@ -156,19 +156,19 @@ public class CupboardBlockProtectListener extends MyListener {
                         tnt = p.getInventory().getItemInOffHand();
                         break;
                     }
-                    if(tnt.getAmount() >= Config.TNT_EXPLOSION_BOUNS_COST.getInt() ){
-                        tnt.setAmount(tnt.getAmount() - Config.TNT_EXPLOSION_BOUNS_COST.getInt());
+                    if(tnt.getAmount() >= Config.TNT_COST.getInt() ){
+                        tnt.setAmount(tnt.getAmount() - Config.TNT_COST.getInt());
                     } else {
                         p.sendMessage(Locales.TNT_NOT_ENOUGH.getString());
                         e.setCancelled(true);
                         return;
                     }
-                }
-                
-                Inventory inv = p.getInventory();
-                if(evilessence_cost != null){
-                    for(int i=0; i<evilessence_cost; i++){
-                        inv.setItem(inv.first(Config.EVILESSENCE_MATERIAL.getMaterial()), null);
+                    
+                    Inventory inv = p.getInventory();
+                    if(evilessence_cost != null){
+                        for(int i=0; i<evilessence_cost; i++){
+                            inv.setItem(inv.first(Config.EVILESSENCE_MATERIAL.getMaterial()), null);
+                        }
                     }
                 }
                 
@@ -188,7 +188,6 @@ public class CupboardBlockProtectListener extends MyListener {
         if(e.isCancelled()) return;
         if(!Config.TNT_SP_ENABLE.getBoolean()) return;
         if(!e.getBlockPlaced().getType().equals(Material.TNT)) return;
-        if(p.getGameMode() != GameMode.SURVIVAL) return;
         
         ItemStack itemInHand;
         switch(e.getHand() == null ? EquipmentSlot.HAND : e.getHand()){

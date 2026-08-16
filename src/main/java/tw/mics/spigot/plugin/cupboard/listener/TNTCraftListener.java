@@ -35,6 +35,7 @@ public class TNTCraftListener extends MyListener {
     	//setup 特殊TNT：中間原版TNT，周圍8格火藥
     	ItemStack item = new ItemStack(Material.TNT);
     	ItemMeta meta = item.getItemMeta();
+    	meta.setDisplayName(Locales.TNT_SPECIAL_NAME.getString());
     	meta.setLore(Locales.TNT_TNT_LORE.getStringList());
     	item.setItemMeta(meta);
     	Util.markSpecialTNTItem(item); // 標記成特殊TNT，跟原版TNT區分，放置時才會走邪惡精華/自動引爆邏輯

@@ -26,8 +26,7 @@ public enum Config {
 
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT event handle by plugin."),
     TNT_EXPLOSION_RADIUS("tnt.radius", 1, "TNT radius (int only)"),
-    TNT_EXPLOSION_BOUNS_Y("tnt.bouns-y", 55, "TNT bouns Y (higher than this, tnt cost tnt.bouns-cost amount, set 0 to disable"),
-    TNT_EXPLOSION_BOUNS_COST("tnt.bouns-cost", 2, "TNT bouns"),
+    TNT_COST("tnt.cost", 2, "placing 1 special TNT costs this many vanilla TNT from hand"),
     TNT_BREAKCHANCE("tnt.breakchance", new String[]{
             "BARRIER:0:AIR",
             "BEDROCK:0:AIR",
@@ -60,7 +59,7 @@ public enum Config {
     COMPASS_DEVIATION("compass.deviation", 200, ""),
     COMPASS_TARGET_Y("compass.target-y", 55, "target must below this"),
     
-	LOCALE("locale", "en-EN", "language file name");
+	LOCALE("locale", "en", "language file name");
 	
 	private final Object value;
 	private final String path;

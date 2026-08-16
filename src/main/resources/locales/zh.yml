@@ -9,6 +9,7 @@ gold-block:
   revoke-access: 已取消授权
   no-access: '&4没有权限'
 tnt:
+  special-name: '&4恶灵炸弹'
   tnt-lore:
   - '&r&6放置后自动点燃'
   - '&r&6可以破坏保护区'
